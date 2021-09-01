@@ -25,11 +25,11 @@ class Substrate:
             print("\nTry to map request:%s" % req_id)
             if self.mapping(req, algorithm, arg):
                 print("Success!")
-        if req.graph['type'] == 1:
-            """a request which is ready to leave """
-            if req_id in self.mapped_info.keys():
-                print("\nRelease the resources which are occupied by request %s", req_id)
-                self.change_resource(req, 'release')
+            if req.graph['type'] == 1:
+                """a request which is ready to leave """
+                if req_id in self.mapped_info.keys():
+                    print("\nRelease the resources which are occupied by request %s" % req_id)
+                    self.change_resource(req, 'release')
 
     def mapping(self, vnr, algorithm, arg):
         """tow phrase:node mapping and link mapping"""
@@ -41,7 +41,7 @@ class Substrate:
             link_map = self.link_mapping(vnr, node_map, algorithm, arg)
             if len(link_map) == vnr.number_of_edges():
                 self.mapped_info.update({vnr.graph['id']: (node_map, link_map)})
-                self.change_reource(vnr, 'allocate')
+                self.change_resource(vnr, 'allocate')
                 print("Success!")
                 return True
             else:
