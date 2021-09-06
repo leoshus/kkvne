@@ -7,12 +7,14 @@ from RLN import RLN
 def configure(sub, name, arg):
     training_set_path = 'kk/training_set/'
     training_set = simulate_events_one(training_set_path, 1000)
+    # RLN构造器
     rln = RLN(sub=sub,
               n_actions=sub.net.number_of_nodes(),
-              n_features=6,
-              learning_rate=0.05,
-              num_epoch=arg,
-              batch_size=100)
+              n_features=6,  # 节点向量维度 衡量节点映射好坏的维度
+              learning_rate=0.05,  # 学习率
+              num_epoch=arg,  # 训练轮次
+              batch_size=100)  # 批量运算多少次后更新模型
+    # 根据训练集训练模型
     rln.train(training_set)
     nodeSaver = tf.train.Saver()
     nodeSaver.save(rln.sess, "./kk/node_model/node_model.ckpt")

@@ -5,6 +5,7 @@ import numpy as np
 import networkx as nx
 
 
+# 构建环境
 class NodeEnv(gym.Env):
     def __init__(self, sub):
         self.count = -1
@@ -30,6 +31,7 @@ class NodeEnv(gym.Env):
         cpu_all = []
         for u in range(self.n_action):
             cpu_all.append(self.sub.nodes[u]['cpu'])
+        # 归一化
         self.cpu_all = (cpu_all - np.min(cpu_all)) / (np.max(cpu_all) - np.min(cpu_all))
         self.vnr = None
 

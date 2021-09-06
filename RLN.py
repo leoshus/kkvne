@@ -17,7 +17,9 @@ class RLN:
         self.batch_size = batch_size  # 批处理的批次大小
 
         self.sub = copy.deepcopy(sub)
+        # 构建模型
         self._build_model()
+        # tensorflow 使用方法
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
@@ -31,6 +33,7 @@ class RLN:
             print("Iteration %s" % iteration)
             # 每轮训练开始前，都需要重置底层网络和相关的强化学习环境
             sub_copy = copy.deepcopy(self.sub)
+            # 构建环境
             env = NodeEnv(self.sub.net)
             # 创建存储参数梯度的缓冲器
             grad_buffer = self.sess.run(self.tvars)
@@ -39,6 +42,7 @@ class RLN:
                 grad_buffer[ix] = grad * 0
             # 记录已经处理的虚拟网络请求数量
             counter = 0
+            #开始训练
             for req in training_set:
                 # 当前待映射的虚拟网络请求ID
                 req_id = req.graph['id']

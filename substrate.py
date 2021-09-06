@@ -4,11 +4,16 @@ from configure import configure
 import networkx as nx
 
 
+# 网络构建
 class Substrate:
     def __init__(self, path, filename):
+        # 构建的网络
         self.net = extract_network(path, filename)
+        # 智能体/训练的模型
         self.agent = None
+        # 映射信息
         self.mapped_info = {}
+        # 指标评估
         self.evaluation = Evaluation(graph=self.net)
         self.no_solution = False
         pass
@@ -22,9 +27,10 @@ class Substrate:
             req_id = req.graph['id']
             if req.graph['type'] == 0:
                 """a request which is newly arrived"""
-            print("\nTry to map request:%s" % req_id)
-            if self.mapping(req, algorithm, arg):
-                print("Success!")
+                print("\nTry to map request:%s" % req_id)
+                # 虚拟网络映射请求 映射到物理网络
+                if self.mapping(req, algorithm, arg):
+                    print("Success!")
             if req.graph['type'] == 1:
                 """a request which is ready to leave """
                 if req_id in self.mapped_info.keys():
@@ -33,8 +39,9 @@ class Substrate:
 
     def mapping(self, vnr, algorithm, arg):
         """tow phrase:node mapping and link mapping"""
+        # 评估指标记录映射请求到达的数量
         self.evaluation.total_arrived += 1
-        # mapping virtual nodes
+        # mapping virtual nodes 虚拟网络映射请求 节点映射
         node_map = self.node_mapping(vnr, algorithm, arg)
         if len(node_map) == vnr.number_of_nodes():
             # mapping virtual links
