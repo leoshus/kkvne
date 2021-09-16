@@ -2,23 +2,45 @@ from topology_maker import extract_network
 import copy
 import tensorflow.compat.v1 as tf
 from RLN import RLN
+from compare1.grc import GRC
+from compare2.mcts import MCTS
+from compare3.reinforce import RL
 
 
 def configure(sub, name, arg):
-    training_set_path = 'kk/training_set/'
-    training_set = simulate_events_one(training_set_path, 1000)
-    # RLN构造器
-    rln = RLN(sub=sub,
-              n_actions=sub.net.number_of_nodes(),
-              n_features=6,  # 节点向量维度 衡量节点映射好坏的维度
-              learning_rate=0.05,  # 学习率
-              num_epoch=arg,  # 训练轮次
-              batch_size=100)  # 批量运算多少次后更新模型
-    # 根据训练集训练模型
-    rln.train(training_set)
-    nodeSaver = tf.train.Saver()
-    nodeSaver.save(rln.sess, "./kk/node_model/node_model.ckpt")
-    return rln
+    if name == "RLN":
+        training_set_path = 'kk/training_set/'
+        training_set = simulate_events_one(training_set_path, 1000)
+        # RLN构造器
+        rln = RLN(sub=sub,
+                  n_actions=sub.net.number_of_nodes(),
+                  n_features=6,  # 节点向量维度 衡量节点映射好坏的维度
+                  learning_rate=0.05,  # 学习率
+                  num_epoch=arg,  # 训练轮次
+                  batch_size=100)  # 批量运算多少次后更新模型
+        # 根据训练集训练模型
+        rln.train(training_set)
+        nodeSaver = tf.train.Saver()
+        nodeSaver.save(rln.sess, "./kk/node_model/node_model.ckpt")
+        return rln
+    elif name == "rl":
+        training_set_path = 'compare3/training_set/'
+        training_set = simulate_events_one(training_set_path, 1000)
+        rl = RL(sub=sub,
+                n_actions=sub.net.number_of_nodes(),
+                n_features=4,
+                learning_rate=0.005,
+                num_epoch=arg,
+                batch_size=100)
+        rl.train(training_set)
+        return rl
+    elif name == "grc":
+        grc = GRC(damping_factor=0.9, sigma=1e-6)
+        return grc
+
+    elif name == "mcts":
+        mcts = MCTS(computation_budget=5, exploration_constant=0.5)
+        return mcts
 
 
 def simulate_events_one(path, number):
